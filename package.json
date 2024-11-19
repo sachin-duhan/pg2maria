@@ -1,0 +1,20 @@
+{
+  "name": "pg2maria",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@faker-js/faker": "^9.2.0",
+    "dotenv": "^16.4.5",
+    "faker": "^6.6.6",
+    "maria": "^0.0.1-a",
+    "mariadb": "^3.4.0",
+    "pg": "^8.13.1"
+  }
+}
