@@ -111,36 +111,6 @@ CREATE TABLE `tasks` (
 
 A `Makefile` is provided to streamline common tasks. Below are the available commands:
 
-```makefile
-.PHONY: all init install up up-dev postgres mariadb logs logs-dev down clean performance
-
-all: init install up postgres mariadb
-
-setup:
-	npm install
-
-up:
-	docker-compose -f docker-compose.dev.yml --env-file .env up -d
-
-postgres:
-	node scripts/postgres.js
-
-mariadb:
-	node scripts/maria.js
-
-logs:
-	docker-compose -f docker-compose.dev.yml logs -f
-
-down:
-	docker-compose -f docker-compose.dev.yml down 
-
-clean:
-	rm -rf node_modules package-lock.json
-
-performance:
-	node run.js
-```
-
 ### Command Descriptions
 
 - `make all`: Runs `init`, `install`, `up`, `postgres`, and `mariadb` sequentially.
