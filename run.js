@@ -4,7 +4,7 @@ const { exec } = require('child_process');
 
 dotenv.config();
 
-const NUM_RUNS = parseInt(process.env.NUM_RUNS) || 10;
+const NUM_RUNS = parseInt(process.env.NUM_RUNS) || 1;
 
 const postgresScript = 'scripts/postgres.js';
 const mariadbScript = 'scripts/maria.js';
@@ -17,11 +17,12 @@ async function runScript(scriptName) {
         reject(error);
       } else {
         try {
-          // Since the scripts output only JSON to stdout, we can parse it directly
           const metrics = JSON.parse(stdout);
           resolve(metrics);
         } catch (parseError) {
           console.error(`Error parsing output from ${scriptName}:`, parseError);
+          console.error('Stdout:', stdout);
+          console.error('Stderr:', stderr);
           reject(parseError);
         }
       }
@@ -62,16 +63,16 @@ async function comparePerformance() {
 
   for (let opIndex = 0; opIndex < operations.length; opIndex++) {
     const operation = operations[opIndex];
-    const postgresTimes = postgresResults.map(run => run[opIndex].Time_ms);
-    const mariadbTimes = mariadbResults.map(run => run[opIndex].Time_ms);
+    const postgresTimes = postgresResults.map(run => parseFloat(run[opIndex].Time));
+    const mariadbTimes = mariadbResults.map(run => parseFloat(run[opIndex].Time));
 
     const postgresAvg = average(postgresTimes);
     const mariadbAvg = average(mariadbTimes);
 
     comparisonTable.push({
       Operation: operation,
-      'PostgreSQL Avg Time (ms)': postgresAvg.toFixed(2),
-      'MariaDB Avg Time (ms)': mariadbAvg.toFixed(2),
+      'PostgreSQL Avg Time': `${postgresAvg.toFixed(2)} ${postgresResults[0][opIndex].Unit}`,
+      'MariaDB Avg Time': `${mariadbAvg.toFixed(2)} ${mariadbResults[0][opIndex].Unit}`,
     });
   }
 
@@ -80,6 +81,7 @@ async function comparePerformance() {
 }
 
 function average(arr) {
+  if (arr.length === 0) return 0;
   return arr.reduce((sum, val) => sum + val, 0) / arr.length;
 }
 
