@@ -4,11 +4,8 @@
 
 all: init install up postgres mariadb
 
-init:
-	npm init -y
-
-install:
-	npm install pg mariadb
+setup:
+	npm install && cp .env.example .env
 
 up:
 	docker-compose -f docker-compose.dev.yml --env-file .env up -d
@@ -23,7 +20,7 @@ logs:
 	docker-compose -f docker-compose.dev.yml logs -f
 
 down:
-	docker-compose down
+	docker-compose -f docker-compose.dev.yml down 
 
 clean:
 	rm -rf node_modules package-lock.json
